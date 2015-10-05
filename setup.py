@@ -1,5 +1,5 @@
 from setuptools import setup
-from email_image_inline import __version__
+from django_email_multi_related import __version__
 
 
 setup(
