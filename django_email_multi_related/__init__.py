@@ -2,4 +2,4 @@
 
 from django_email_multi_related.mail import EmailMultiRelated
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
