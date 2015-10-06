@@ -1,5 +1,4 @@
 from setuptools import setup
-from django_email_multi_related import __version__
 
 
 setup(
@@ -8,13 +7,16 @@ setup(
         'beautifulsoup4>=4.4.1',
         'pynliner>=0.5.2',
     },
+    setup_requires={
+        'beautifulsoup4>=4.4.1',
+        'pynliner>=0.5.2',
+    },
     packages=[
         'django_email_multi_related',
         'django_email_multi_related.templatetags',
     ],
-    version=__version__,
+    version='0.1.5',
     platforms=['all'],
     license='BSD',
     description='',
-    long_description=open('README.md').read(),
 )
