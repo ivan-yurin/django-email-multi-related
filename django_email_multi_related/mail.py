@@ -23,7 +23,15 @@ class EmailMultiRelatedCore(EmailMultiAlternatives):
         content = open(path, 'rb').read()
 
         mime = MIMEImage(content)
-        mime.add_header('Content-ID', content_id)
+
+        mime_type = mime['Content-Type']
+
+        del mime['Content-Type']
+        del mime['Content-Disposition']
+
+        mime.add_header('Content-ID', '<{}>'.format(content_id))
+        mime.add_header('Content-Disposition', 'inline', filename=filename)
+        mime.add_header('Content-Type', mime_type, name=filename)
 
         self.attach(mime)
 
