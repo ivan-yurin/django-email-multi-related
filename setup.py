@@ -15,7 +15,7 @@ setup(
         'django_email_multi_related',
         'django_email_multi_related.templatetags',
     ],
-    version='0.1.7',
+    version='0.1.8',
     platforms=['all'],
     license='BSD',
     description='',

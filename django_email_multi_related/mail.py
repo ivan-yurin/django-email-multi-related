@@ -9,16 +9,23 @@ from email.mime.image import MIMEImage
 
 import pynliner
 from bs4 import BeautifulSoup
-from bs4.element import Comment
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 
 class EmailMultiRelatedCore(EmailMultiAlternatives):
+    def __init__(self, *args, **kwargs):
+        super(EmailMultiRelatedCore, self).__init__(*args, **kwargs)
+
+        self._attach_related_file_ids = set()
+
+
     def attach_related_file(self, path):
-        filename = os.path.basename(path)
-        content_id = hashlib.md5(filename).hexdigest()
+        content_id = hashlib.md5(path).hexdigest()
+
+        if content_id in self._attach_related_file_ids:
+            return content_id
 
         content = open(path, 'rb').read()
 
@@ -30,10 +37,14 @@ class EmailMultiRelatedCore(EmailMultiAlternatives):
         del mime['Content-Disposition']
 
         mime.add_header('Content-ID', '<{}>'.format(content_id))
+
+        filename = os.path.basename(path)
         mime.add_header('Content-Disposition', 'inline', filename=filename)
         mime.add_header('Content-Type', mime_type, name=filename)
 
         self.attach(mime)
+
+        self._attach_related_file_ids.add(content_id)
 
         return content_id
 
@@ -73,10 +84,6 @@ class EmailMultiRelated(EmailMultiRelatedCore):
 
     def _clear_html(self, content):
         html = BeautifulSoup(content, 'lxml')
-
-        # remove comments
-        for item in html.find_all(text=lambda t: isinstance(t, Comment)):
-            item.extract()
 
         # remove classes and ids
         for item in html.find_all():
